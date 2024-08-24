@@ -1,0 +1,9 @@
+<div>
+  {% if not results %}
+    <div>Nenhum xpto</div>
+  {% else %}
+    {% for item in results %}
+      <div>{{ item }}</div>
+    {% endfor %}
+  {% endif %}
+</div>
