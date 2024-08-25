@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'modules.investments.stocks',
+    'modules.investments.treasury',
 ]
 
 MIDDLEWARE = [

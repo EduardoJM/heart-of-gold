@@ -5,11 +5,16 @@ dependencies = [
     "Django==5.0",
     "django-environ==0.11.2",
     "djangorestframework==3.15.2",
+
+    "pydantic==2.8.2",
+    "pydantic_core==2.20.1",
+    # for data-scrap
+    "playwright==1.46.0",
 ]
 
 [project.optional-dependencies]
 dev = ["poethepoet"]
 
 [tool.poe.tasks]
-clean = "rm -rf build && rm -rf heart_of_gold.egg-info"
+clean = "rm -rf build && rm -rf src/heart_of_gold.egg-info"
 manage = "src/manage.py"

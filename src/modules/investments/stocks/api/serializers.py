@@ -1,39 +1,37 @@
+from django.db import transaction
 from rest_framework import serializers
 from modules.investments.stocks import models
-from core.rest_framework.serializers import ActionsSerializers
 
 class InvoiceListSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Invoice
         exclude = ["user"]
 
+class InvoiceCreateTaxSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100)
+    value = serializers.IntegerField()
+
 class InvoiceCreateSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField(default=serializers.CurrentUserDefault())
+    taxes = InvoiceCreateTaxSerializer(many=True)
+
+    def create(self, validated_data):
+        taxes = validated_data.pop('taxes')
+        
+        with transaction.atomic():
+            instance = super().create(validated_data)
+            for tax in taxes:
+                tax_item = models.Tax.objects.get_or_create(
+                    name=tax.get('name')
+                )
+                models.InvoiceTax.objects.create(
+                    tax=tax_item,
+                    invoice=instance,
+                    value=tax.get('value')
+                )
+
+        return instance
 
     class Meta:
         model = models.Invoice
         fields = "__all__"
-
-class StockSerializer(ActionsSerializers):
-    class ListSerializer(serializers.ModelSerializer):
-        class Meta:
-            model = models.Stock
-            fields = "__all__"
-
-    class CreateSerializer(serializers.ModelSerializer):
-        ticket = serializers.CharField(max_length=10)
-        user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-    
-        class Meta:
-            model = models.Stock
-            fields = "__all__"
-        
-        def create(self, validated_data):
-            ticket = validated_data.pop('ticket')
-            ticket = models.Ticket.objects.update_or_create(ticket=ticket)
-            validated_data['ticket'] = ticket
-            return super().create(validated_data)
-
-    list = ListSerializer
-    create = CreateSerializer
-    add = CreateSerializer

@@ -5,13 +5,7 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class Ticket(models.Model):
-    user = models.ForeignKey(
-        User,
-        verbose_name=_('user'),
-        on_delete=models.CASCADE,
-        related_name='tickets',
-    )
-    ticket = models.CharField(_('ticket'), max_length=10)
+    ticket = models.CharField(_('ticket'), max_length=10, unique=True)
 
     def __str__(self):
         return self.ticket
@@ -27,7 +21,7 @@ class Tax(models.Model):
         on_delete=models.CASCADE,
         related_name='taxes',
     )
-    name = models.CharField(_('name'), max_length=100)
+    name = models.CharField(_('name'), max_length=100, unique=True)
 
     def __str__(self):
         return self.name
@@ -43,7 +37,7 @@ class Invoice(models.Model):
         on_delete=models.CASCADE,
         related_name='invoices',
     )
-    number = models.CharField(_('note number'), max_length=100)
+    number = models.CharField(_('note number'), max_length=100, unique=True)
     net_value = models.IntegerField(_('net value'))
 
     def __str__(self):
