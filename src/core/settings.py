@@ -26,6 +26,8 @@ INSTALLED_APPS = [
 
     'modules.investments.stocks',
     'modules.investments.treasury',
+    
+    'modules.investments.funds.inter_conservador_firf_cp',
 ]
 
 MIDDLEWARE = [
