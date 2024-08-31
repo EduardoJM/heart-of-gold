@@ -18,11 +18,12 @@ dependencies = [
 
     "pydantic==2.8.2",
     "pydantic_core==2.20.1",
-    # for data-scrap
-    "playwright==1.46.0",
 ]
 
 [project.optional-dependencies]
+worker = [
+    "playwright==1.46.0",
+]
 dev = ["poethepoet"]
 
 [tool.poe.tasks]

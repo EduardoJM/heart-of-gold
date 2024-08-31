@@ -1,7 +1,9 @@
 from rest_framework import viewsets
 from modules.investments.stocks import models
+from drf_spectacular.utils import extend_schema
 from . import serializers
 
+@extend_schema(tags=['stocks'])
 class InvoiceViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         request = self.request
