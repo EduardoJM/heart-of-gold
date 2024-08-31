@@ -1,0 +1,15 @@
+FROM python:3.11
+
+WORKDIR /app/src
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+RUN apt-get update && apt-get install -y python3-dev
+
+COPY ./pyproject.toml /app/src/pyproject.toml
+RUN pip install .
+
+COPY . /app
+
+EXPOSE 8000
+CMD python manage.py runserver 0.0.0.0:8000

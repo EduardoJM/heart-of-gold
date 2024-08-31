@@ -1,13 +1,16 @@
 from datetime import date
 from modules.investments.funds.base import FundStrategyBase, FundComputeMode
-from .models import CumulativeReturn
+from modules.investments.funds.decorator import register
 
+@register('Inter Conservador FIRF CP')
 class InterConservadorFIRFCPStrategy(FundStrategyBase):
     fund_name = 'Inter Conservador FIRF CP'
     computation_mode = FundComputeMode.EveryDay
     limit_lose_days = 100
 
     def compute_value(self):
+        from .models import CumulativeReturn
+        
         now = date.today()
 
         initial_cumulative = CumulativeReturn.objects.find_nearest_up_date(self.initial_date)

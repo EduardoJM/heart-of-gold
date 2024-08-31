@@ -1,0 +1,63 @@
+version: '3.3'
+
+networks:
+  hg_net:
+    driver: bridge
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    restart: always
+    volumes:
+      - hg_redis:/data
+    networks:
+      - hg_net
+
+  db:
+    image: postgres:16-alpine
+    restart: always
+    volumes:
+      - hg_db:/var/lib/postgresql/data/
+    environment:
+      - TZ=America/Sao_Paulo
+      - POSTGRES_DB=investments
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=GoDZNxx8rqVqG8oy6cAtU4Wxv5Ma8zT
+    networks:
+      - hg_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - ./src:/app/src
+    env_file:
+      - ./.env
+    networks:
+      - hg_net
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker:
+    build: .
+    restart: always
+    entrypoint: celery -A core worker --beat --loglevel=info
+    volumes:
+      - ./src:/app/src
+    env_file:
+      - ./.env
+    networks:
+      - hg_net
+
+volumes:
+  hg_db:
+  hg_redis:
